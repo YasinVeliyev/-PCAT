@@ -6,8 +6,14 @@ const Photo = require("../models/photoModel");
 __dirname = path.dirname(__dirname);
 
 exports.getAllPhotos = async (req, res, next) => {
-	const photos = await Photo.find({});
-	res.render("index.ejs", { photos });
+	const page = req.query.page || 1;
+	const photosPerPage = 2;
+	const photos = await Photo.find({})
+		.sort("-dateCreated")
+		.skip((page - 1) * photosPerPage)
+		.limit(photosPerPage);
+	const pages = Math.ceil((await Photo.find({}).countDocuments()) / photosPerPage);
+	res.render("index.ejs", { photos, current: page, pages });
 };
 
 exports.getPhotoById = async (req, res, next) => {

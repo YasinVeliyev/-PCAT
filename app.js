@@ -5,7 +5,7 @@ const fileUpload = require("express-fileupload");
 const methodOverride = require("method-override");
 
 const photoContreller = require("./controllers/photoController");
-const phageContreller = require("./controllers/phageController");
+const pageContreller = require("./controllers/pageController");
 
 const app = express();
 app.use(express.json());
@@ -20,9 +20,9 @@ app.use(
 	}),
 );
 
-app.get("/add", phageContreller.getPhotoAddPage);
-app.get("/about", phageContreller.getAboutPage);
-app.get("/photo/edit/:photoId", phageContreller.getEditPhoto);
+app.get("/add", pageContreller.getPhotoAddPage);
+app.get("/about", pageContreller.getAboutPage);
+app.get("/photo/edit/:photoId", pageContreller.getEditPhoto);
 
 app.get("/", photoContreller.getAllPhotos);
 app.post("/photos", photoContreller.uploadPhoto);

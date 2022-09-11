@@ -1,7 +1,7 @@
 const Photo = require("../models/photoModel");
 
 exports.getIndexPage = (req, res) => {
-    res.render("photos", { page: " index" });
+    res.render("photo", { page: " index" });
 };
 exports.getAboutPage = (req, res) => {
     res.render("about", { page: " about" });

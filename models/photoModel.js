@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 
-let photoScheam = new mongoose.Schema({
-	title: String,
-	description: String,
-	image: String,
-	dateCreated: {
-		type: Date,
-		default: Date.now,
-	},
+const photoSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    src: { type: String, required: true },
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
-const Photo = mongoose.model("Photo", photoScheam);
+photoSchema.pre(/^find/, function () {
+    this.populate("author");
+});
 
-module.exports = Photo;
+const photoModel = mongoose.model("Photos", photoSchema);
+module.exports = photoModel;

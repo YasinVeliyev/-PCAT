@@ -1,37 +1,48 @@
 const express = require("express");
+require("dotenv").config();
 const path = require("path");
 const mongoose = require("mongoose");
-const fileUpload = require("express-fileupload");
-const methodOverride = require("method-override");
-
-const photoContreller = require("./controllers/photoController");
-const pageContreller = require("./controllers/pageController");
-
+const morgan = require("morgan");
+const pageRouter = require("./routes/pageRoutes");
+const authRouter = require("./routes/authRoutes");
+const photoRouter = require("./routes/photoRoutes");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const app = express();
+
+app.use(express.static("public"));
+
+app.set("view engine", "ejs");
+app.use(
+    session({
+        secret: process.env["SESSION_SECRET"],
+        resave: true,
+        saveUninitialized: true,
+        store: MongoStore.create({
+            mongoUrl: process.env["MONGO_SESSION_URI"],
+        }),
+    }),
+);
+app.use((req, res, next) => {
+
+    res.locals.user = req.session.user;
+
+    next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-app.use("/", express.static("public"));
-app.use(fileUpload());
-app.use(
-	methodOverride("_method", {
-		methods: ["POST", "GET"],
-	}),
-);
+app.use(morgan("dev"));
 
-app.get("/add", pageContreller.getPhotoAddPage);
-app.get("/about", pageContreller.getAboutPage);
-app.get("/photo/edit/:photoId", pageContreller.getEditPhoto);
+app.use(pageRouter);
+app.use(authRouter);
+app.use("/photos", photoRouter);
 
-app.get("/", photoContreller.getAllPhotos);
-app.post("/photos", photoContreller.uploadPhoto);
-app.get("/photo/:photoId", photoContreller.getPhotoById);
-app.put("/photo/:photoId", photoContreller.updatePhoto);
-app.delete("/photo/:photoId", photoContreller.deletePhoto);
 
-mongoose.connect("mongodb://localhost:27017/pcap").then(() => {
-	app.listen(5000, () => {
-		console.log("Sunucu 5000 portunda başlatıldı ...");
-	});
-});
+const PORT = process.env.PORT || 5000;
+mongoose
+    .connect(process.env["MONGO_URI"])
+    .then(() => {
+        app.listen(PORT, () => console.log(`Server is running port on ${PORT}`));
+    })
+    .catch((err) => console.error(err));

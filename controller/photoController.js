@@ -30,7 +30,7 @@ exports.deletePhoto = (req, res, next) => {
 
 exports.updatePhoto = async (req, res, next) => {
     console.log(req.body, req.params.photoId)
-    let photo = await Photo.findByIdAndUpdate(req.params.photoIdf, {
+    let photo = await Photo.findByIdAndUpdate(req.params.photoId, {
         name: req.body.name,
         src: req.file?.filename,
         title: req.body.title,

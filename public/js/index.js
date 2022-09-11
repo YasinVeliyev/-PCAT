@@ -38,17 +38,17 @@ let form = `<form action="/photos/add_photo" method="post" enctype="multipart/fo
 
 </form>`;
 
-// let deleteform = document.querySelector(".delete_photo");
-// let deletePhoto = (event) => {
-//     event.preventDefault();
-//     fetch(deleteform.action, {
-//         method: "DELETE",
-//     })
-//         .then((res) => res.json())
-//         .then(() => {
-//             event.path[3].remove();
-//         })
-//         .catch(console.error);
-// };
+let deleteform = document.querySelector(".delete_photo");
+let deletePhoto = (event) => {
+    event.preventDefault();
+    fetch(deleteform.action, {
+        method: "DELETE",
+    })
+        .then((res) => res.json())
+        .then(() => {
+            event.path[3].remove();
+        })
+        .catch(console.error);
+};
 
-// deleteform.addEventListener("submit", deletePhoto);
+deleteform.addEventListener("submit", deletePhoto);
